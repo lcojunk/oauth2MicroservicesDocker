@@ -1,0 +1,5 @@
+gnome-terminal -x sh -c "java -jar DemoDiscovery/oauth2Microservices-discovery-0.0.1-SNAPSHOT.jar; bash"
+gnome-terminal -x sh -c "java -jar DemoAuthServer/oauth2Microservices-authserver-0.0.1-SNAPSHOT.jar; bash"
+gnome-terminal -x sh -c "java -jar DemoEdgeServer/oauth2Microservices-edgeserver-0.0.1-SNAPSHOT.jar; bash"
+gnome-terminal -x sh -c "java -jar DemoSearch/oauth2Microservices-search-withsecurity-0.0.1-SNAPSHOT.jar; bash"
+gnome-terminal -x sh -c "java -jar DemoCreate/oauth2Microservices-create-withsecurity-0.0.1-SNAPSHOT.jar; bash"

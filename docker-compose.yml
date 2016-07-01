@@ -1,0 +1,83 @@
+version: '2'
+services:
+  demodiscovery:
+#  restart: unless-stopped
+    build: ./DemoDiscovery
+    ports:
+      - "8761:8761"
+    volumes:
+#      - ./docker/demodiscovery:/tmp
+      - ./docker/spring_application/logs:/tmp/logs
+    hostname: demodiscovery
+  democonfig:
+#  restart: unless-stopped
+    build: ./DemoConfig
+    hostname: democonfigserver
+    links:
+     - demodiscovery    
+# host:guest  
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./docker/democonfig/config:/tmp/config
+      - ./docker/spring_application/logs:/tmp/logs
+  demoauthserver:
+#  restart: unless-stopped
+    build: ./DemoAuthServer
+    hostname: demoauthserver
+    links:
+     - demodiscovery    
+# host:guest  
+    env_file:
+      - ./DemoAuthServer/mysqlvariables.env
+    ports:
+      - "9999:9999"
+      - "9306:3306"
+    volumes:
+      - ./docker/demoauthserver/mysql:/var/lib/mysql
+#      - ./docker/demoauthserver/tmp/logs:/tmp/logs
+      - ./docker/spring_application/logs:/tmp/logs
+  democreate:
+#  restart: unless-stopped
+    build: ./DemoCreate
+    links:
+     - demodiscovery    
+     - demoauthserver    
+# host:guest  
+    env_file:
+      - ./DemoCreate/mysqlvariables.env
+    ports:
+      - "9005:9005"
+      - "3306:3306"
+    volumes:
+      - ./docker/democreate/mysql:/var/lib/mysql
+#      - ./docker/democreate/tmp/logs:/tmp/logs
+      - ./docker/spring_application/logs:/tmp/logs
+  demoedgeserver:
+#  restart: unless-stopped
+    build: ./DemoEdgeServer
+    links:
+     - demodiscovery    
+     - demoauthserver    
+# host:guest  
+    ports:
+      - "8080:8080"
+    volumes:
+#      - ./docker/demoedgeserver:/tmp
+      - ./docker/spring_application/logs:/tmp/logs
+  demosearch:
+#  restart: unless-stopped
+    build: ./DemoSearch
+    links:
+     - demodiscovery    
+     - demoauthserver    
+# host:guest  
+    ports:
+      - "9006:9006"
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+#      - ./docker/demosearch/tmp:/tmp
+      - ./docker/spring_application/logs:/tmp/logs
+      - ./docker/demosearch/elasticsearch/config:/usr/share/elasticsearch/config
+      - ./docker/demosearch/elasticsearch/data:/usr/share/elasticsearch/data
